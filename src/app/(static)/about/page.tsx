@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { APP_CONFIG } from "@/lib/constants";
-import { Users, Target, Award, Heart, ArrowRight } from "lucide-react";
+import { Users, Target, Award, Heart, ArrowRight, Quote } from "lucide-react";
 
 export default function AboutPage() {
   return (
@@ -49,8 +50,77 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Values Section */}
+      {/* Founder Section */}
       <section className="py-16 bg-white/5">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-white mb-4">Meet Our Founder</h2>
+            <p className="text-xl text-gray-300">
+              The visionary behind {APP_CONFIG.name}
+            </p>
+          </div>
+          
+          <div className="grid lg:grid-cols-3 gap-8 items-center">
+            {/* Founder Image */}
+            <div className="lg:col-span-1 flex justify-center">
+              <div className="relative w-80 h-80 rounded-2xl overflow-hidden bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/10">
+                {/* Placeholder for actual image - replace src with your image */}
+                <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center">
+                  <span className="text-6xl font-bold text-white">AJ</span>
+                </div>
+                {/* Uncomment and replace with actual image */}
+                <Image
+                  src="/images/founder.jpeg"
+                  alt="Ayush Jaiswal - Founder & CEO"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
+            
+            {/* Founder Info */}
+            <div className="lg:col-span-2 space-y-6">
+              <div>
+                <h3 className="text-3xl font-bold text-white mb-2">Ayush Jaiswal</h3>
+                <p className="text-blue-400 text-xl mb-4">Founder & CEO</p>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Former tech executive with 2+ years of experience in AI and HR technology. 
+                  Ayush founded {APP_CONFIG.name} with a vision to democratize interview preparation 
+                  and help millions of professionals achieve their career goals.
+                </p>
+              </div>
+              
+              {/* Quote */}
+              <div className="bg-gradient-to-r from-blue-600/10 to-purple-600/10 border border-blue-500/20 rounded-xl p-6">
+                <Quote className="w-8 h-8 text-blue-400 mb-4" />
+                <p className="text-gray-300 italic text-lg">
+                  "I believe everyone deserves the opportunity to present their best self during interviews. 
+                  Our AI-powered platform makes that possible for everyone."
+                </p>
+              </div>
+              
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-4 pt-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-blue-400">2+</div>
+                  <div className="text-sm text-gray-400">Years Experience</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-400">1000+</div>
+                  <div className="text-sm text-gray-400">Users Helped</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-purple-400">95%</div>
+                  <div className="text-sm text-gray-400">Success Rate</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Values Section */}
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-white mb-4">Our Values</h2>
@@ -60,7 +130,7 @@ export default function AboutPage() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-2xl bg-white/5 border border-white/10">
+            <div className="text-center p-8 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
               <Users className="w-12 h-12 text-blue-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-white mb-3">Accessibility</h3>
               <p className="text-gray-300">
@@ -69,7 +139,7 @@ export default function AboutPage() {
               </p>
             </div>
             
-            <div className="text-center p-8 rounded-2xl bg-white/5 border border-white/10">
+            <div className="text-center p-8 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
               <Award className="w-12 h-12 text-green-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-white mb-3">Excellence</h3>
               <p className="text-gray-300">
@@ -78,59 +148,12 @@ export default function AboutPage() {
               </p>
             </div>
             
-            <div className="text-center p-8 rounded-2xl bg-white/5 border border-white/10">
+            <div className="text-center p-8 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
               <Heart className="w-12 h-12 text-pink-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-white mb-3">Empathy</h3>
               <p className="text-gray-300">
                 Understanding the challenges job seekers face and creating solutions 
                 that genuinely help them succeed.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Team Section */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-white mb-4">Our Team</h2>
-            <p className="text-xl text-gray-300">
-              Meet the passionate people behind {APP_CONFIG.name}
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-8 rounded-2xl bg-white/5 border border-white/10">
-              <div className="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">JD</span>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">John Doe</h3>
-              <p className="text-blue-400 mb-3">CEO & Founder</p>
-              <p className="text-gray-300 text-sm">
-                Former tech executive with 15+ years of experience in AI and HR technology.
-              </p>
-            </div>
-            
-            <div className="text-center p-8 rounded-2xl bg-white/5 border border-white/10">
-              <div className="w-24 h-24 bg-gradient-to-br from-green-400 to-blue-400 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">JS</span>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Jane Smith</h3>
-              <p className="text-green-400 mb-3">CTO</p>
-              <p className="text-gray-300 text-sm">
-                AI researcher and engineer with expertise in natural language processing.
-              </p>
-            </div>
-            
-            <div className="text-center p-8 rounded-2xl bg-white/5 border border-white/10">
-              <div className="w-24 h-24 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">MJ</span>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Mike Johnson</h3>
-              <p className="text-purple-400 mb-3">Head of Product</p>
-              <p className="text-gray-300 text-sm">
-                Product leader with deep experience in career development and education technology.
               </p>
             </div>
           </div>
@@ -152,7 +175,7 @@ export default function AboutPage() {
             </p>
             
             <p>
-              Our founder, John, experienced this firsthand when he struggled through 
+              Our founder, Ayush, experienced this firsthand when he struggled through 
               multiple interviews despite having the technical expertise. After finally 
               landing his dream job, he realized that interview preparation shouldn't 
               be a luxury or a mystery.
