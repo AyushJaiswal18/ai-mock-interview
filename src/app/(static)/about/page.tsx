@@ -68,7 +68,6 @@ export default function AboutPage() {
                 <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center">
                   <span className="text-6xl font-bold text-white">AJ</span>
                 </div>
-                {/* Uncomment and replace with actual image */}
                 <Image
                   src="/images/founder.jpeg"
                   alt="Ayush Jaiswal - Founder & CEO"

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { APP_CONFIG, SEO_CONFIG } from "@/lib/constants";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { dark } from '@clerk/themes'
+import { APP_CONFIG, SEO_CONFIG } from "@/lib/constants";
+import { dark } from "@clerk/themes";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +21,6 @@ export const metadata: Metadata = {
   title: SEO_CONFIG.title,
   description: SEO_CONFIG.description,
   keywords: SEO_CONFIG.keywords,
-  authors: [{ name: APP_CONFIG.author }],
   openGraph: {
     title: SEO_CONFIG.title,
     description: SEO_CONFIG.description,
