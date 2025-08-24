@@ -83,12 +83,12 @@ export default function AdminDashboard() {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Link href="/admin/recruiters">
+          <Link href="/admin/users">
             <div className="p-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
               <Users className="w-8 h-8 text-blue-400 mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Manage Recruiters</h3>
+              <h3 className="text-lg font-semibold text-white mb-2">User Management</h3>
               <p className="text-gray-300 text-sm">
-                Create, edit, and manage recruiter accounts
+                Manage all users, roles, and permissions
               </p>
             </div>
           </Link>

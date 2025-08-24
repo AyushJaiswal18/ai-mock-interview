@@ -1,11 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { UserButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
-import { APP_CONFIG, NAV_CONFIG } from "@/lib/constants";
-import { Brain, Menu, X } from "lucide-react";
+import { APP_CONFIG, NAV_CONFIG, ROLES } from "@/lib/constants";
+import { useAuth } from "@/contexts/auth-context";
+import { Brain, Menu, X, LogOut, User } from "lucide-react";
 import { useState } from "react";
+
+// Helper functions for role-based navigation
+function getRoleBasedDashboard(role?: string): string {
+  switch (role) {
+    case ROLES.ADMIN:
+      return '/admin/dashboard';
+    case ROLES.RECRUITER:
+      return '/recruiter/dashboard';
+    case ROLES.CANDIDATE:
+      return '/candidate/dashboard';
+    default:
+      return '/dashboard';
+  }
+}
+
+function getRoleBasedDashboardLabel(role?: string): string {
+  switch (role) {
+    case ROLES.ADMIN:
+      return 'Admin Dashboard';
+    case ROLES.RECRUITER:
+      return 'Recruiter Dashboard';
+    case ROLES.CANDIDATE:
+      return 'My Dashboard';
+    default:
+      return 'Dashboard';
+  }
+}
 
 interface NavbarProps {
   className?: string;
@@ -13,6 +40,7 @@ interface NavbarProps {
 
 export function Navbar({ className = "" }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -58,26 +86,44 @@ export function Navbar({ className = "" }: NavbarProps) {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <SignedIn>
-              <UserButton afterSignOutUrl={NAV_CONFIG.home.path} />
-              <Button variant="outline" size="sm" className="text-white" asChild>
-                <Link href={NAV_CONFIG.dashboard.path}>
-                  {NAV_CONFIG.dashboard.label}
-                </Link>
-              </Button>
-            </SignedIn>
-            <SignedOut>
-              <Button variant="ghost" size="sm" className="text-white" asChild>
-                <Link href={NAV_CONFIG.signIn.path}>
-                  {NAV_CONFIG.signIn.label}
-                </Link>
-              </Button>
-              <Button size="sm" asChild>
-                <Link href={NAV_CONFIG.signUp.path}>
-                  {NAV_CONFIG.signUp.label}
-                </Link>
-              </Button>
-            </SignedOut>
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-sm text-gray-300">
+                    {user?.firstName || user?.email}
+                  </span>
+                </div>
+                <Button variant="outline" size="sm" className="text-white" asChild>
+                  <Link href={getRoleBasedDashboard(user?.role)}>
+                    {getRoleBasedDashboardLabel(user?.role)}
+                  </Link>
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={logout}
+                  className="text-white hover:text-red-400"
+                >
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" className="text-white" asChild>
+                  <Link href="/login">
+                    Sign In
+                  </Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link href="/register">
+                    Sign Up
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -125,31 +171,43 @@ export function Navbar({ className = "" }: NavbarProps) {
               
               {/* Mobile Auth Buttons */}
               <div className="pt-4 border-t border-white/10">
-                <SignedIn>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-gray-300 text-sm">Signed in</span>
-                    <UserButton afterSignOutUrl={NAV_CONFIG.home.path} />
-                  </div>
-                  <Button variant="outline" size="sm" className="w-full text-white" asChild>
-                    <Link href={NAV_CONFIG.dashboard.path}>
-                      {NAV_CONFIG.dashboard.label}
-                    </Link>
-                  </Button>
-                </SignedIn>
-                <SignedOut>
+                {isAuthenticated ? (
+                  <>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-gray-300 text-sm">Signed in as {user?.firstName || user?.email}</span>
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-white" />
+                      </div>
+                    </div>
+                    <Button variant="outline" size="sm" className="w-full text-white" asChild>
+                      <Link href={getRoleBasedDashboard(user?.role)}>
+                        {getRoleBasedDashboardLabel(user?.role)}
+                      </Link>
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={logout}
+                      className="w-full text-white hover:text-red-400"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
                   <div className="flex flex-col space-y-2">
                     <Button variant="ghost" size="sm" className="w-full text-white" asChild>
-                      <Link href={NAV_CONFIG.signIn.path}>
-                        {NAV_CONFIG.signIn.label}
+                      <Link href="/login">
+                        Sign In
                       </Link>
                     </Button>
                     <Button size="sm" className="w-full" asChild>
-                      <Link href={NAV_CONFIG.signUp.path}>
-                        {NAV_CONFIG.signUp.label}
+                      <Link href="/register">
+                        Sign Up
                       </Link>
                     </Button>
                   </div>
-                </SignedOut>
+                )}
               </div>
             </nav>
           </div>

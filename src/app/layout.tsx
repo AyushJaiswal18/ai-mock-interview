@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { APP_CONFIG, SEO_CONFIG } from "@/lib/constants";
-import { dark } from "@clerk/themes";
+import { AuthProvider } from "@/contexts/auth-context";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -41,19 +40,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider
-    appearance={{
-      baseTheme: dark,
-    }}>
-      <html lang="en" className="dark">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
-        >
+    <html lang="en" className="dark">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
+      >
+        <AuthProvider>
           <Navbar />
           {children}
           <Footer />
-        </body>
-      </html>
-    </ClerkProvider>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
