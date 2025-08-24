@@ -10,24 +10,11 @@ export function UsersHeader() {
   const handleSyncUsers = async () => {
     try {
       setSyncing(true);
-      const response = await fetch('/api/admin/users/sync', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
-        },
-      });
-      
-      if (response.ok) {
-        const result = await response.json();
-        alert(`Sync completed! Synced: ${result.data.synced}, Updated: ${result.data.updated}, Total: ${result.data.total}`);
-        // Refresh the page to show updated data
-        window.location.reload();
-      } else {
-        alert('Failed to sync users');
-      }
+      // For now, just refresh the page since we don't have a sync endpoint
+      window.location.reload();
     } catch (error) {
-      console.error('Error syncing users:', error);
-      alert('Error syncing users');
+      console.error('Error refreshing users:', error);
+      alert('Error refreshing users');
     } finally {
       setSyncing(false);
     }

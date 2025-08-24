@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-import { APP_CONFIG, SEO_CONFIG } from "@/lib/constants";
+import { SEO_CONFIG } from "@/lib/constants";
 import { AuthProvider } from "@/contexts/auth-context";
 import "./globals.css";
 

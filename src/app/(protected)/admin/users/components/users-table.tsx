@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { UsersFilter } from './users-filter';
 import { UsersTableContent } from './users-table-content';
@@ -9,7 +9,6 @@ import { useDebounce } from '@/hooks/use-debounce';
 
 interface User {
   _id: string;
-  clerkId: string;
   email: string;
   firstName?: string;
   lastName?: string;
@@ -47,15 +46,15 @@ export function UsersTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-  const [pagination, setPagination] = useState<any>(null);
-  const [filters, setFilters] = useState<any>(null);
+  const [pagination, setPagination] = useState<UsersResponse['pagination'] | null>(null);
+  const [filters, setFilters] = useState<UsersResponse['filters'] | undefined>(undefined);
 
   // Debounced search
   const search = searchParams.get('search') || '';
   const debouncedSearch = useDebounce(search, 300);
 
   // Fetch users
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -71,17 +70,25 @@ export function UsersTable() {
         throw new Error('Failed to fetch users');
       }
 
-      const data: UsersResponse = await response.json();
-      console.log('API Response:', data);
-      setUsers(data.users);
-      setPagination(data.pagination);
-      setFilters(data.filters);
+      const responseData = await response.json();
+      console.log('API Response:', responseData);
+      
+      if (responseData.success && responseData.data) {
+        const data: UsersResponse = responseData.data;
+        setUsers(data.users);
+        setPagination(data.pagination);
+        setFilters(data.filters);
+      } else {
+        setFilters(undefined);
+        throw new Error(responseData.error || 'Failed to fetch users');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
+      setFilters(undefined);
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchParams]);
 
   // Update URL params
   const updateSearchParams = (updates: Record<string, string | null>) => {
@@ -160,7 +167,7 @@ export function UsersTable() {
   // Fetch users when params change
   useEffect(() => {
     fetchUsers();
-  }, [debouncedSearch, searchParams]);
+  }, [debouncedSearch, searchParams, fetchUsers]);
 
   if (error) {
     return (
@@ -210,6 +217,7 @@ export function UsersTable() {
         onSort={handleSort}
         pagination={pagination}
         onPageChange={handlePageChange}
+        onUserUpdate={fetchUsers}
       />
     </div>
   );

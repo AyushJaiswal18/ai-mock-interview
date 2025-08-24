@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/auth-context';
 import { APP_CONFIG } from '@/lib/constants';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -113,86 +113,81 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-bold text-white mb-3">
             Join {APP_CONFIG.name}
           </h1>
-          <p className="text-gray-400">
-            Create your account to get started
+          <p className="text-gray-400 text-sm">
+            Create your candidate account to get started
           </p>
         </div>
 
-        <div className="bg-white/5 rounded-lg p-8 border border-white/10">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Main Form */}
+        <div className="bg-white/5 rounded-xl p-6 border border-white/10 backdrop-blur-sm">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
                 <p className="text-red-400 text-sm">{error}</p>
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Name Fields */}
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-1.5">
                   First Name
                 </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="First name"
-                  />
-                </div>
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  placeholder="First name"
+                />
               </div>
 
               <div>
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-1.5">
                   Last Name
                 </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Last name"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  value={formData.lastName}
                   onChange={handleChange}
-                  required
-                  className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your email"
+                  className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  placeholder="Last name"
                 />
               </div>
             </div>
 
+            {/* Email */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1.5">
+                Email Address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            {/* Password */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1.5">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   id="password"
                   name="password"
@@ -200,7 +195,7 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2.5 pr-10 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="Create a password"
                 />
                 <button
@@ -213,12 +208,12 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-1.5">
                 Confirm Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
@@ -226,7 +221,7 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2.5 pr-10 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   placeholder="Confirm your password"
                 />
                 <button
@@ -239,16 +234,18 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* Submit Button */}
             <Button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors text-sm"
             >
               {loading ? 'Creating account...' : 'Create Account'}
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
+          {/* Sign In Link */}
+          <div className="mt-5 text-center">
             <p className="text-gray-400 text-sm">
               Already have an account?{' '}
               <Link href="/login" className="text-blue-400 hover:text-blue-300 font-medium">
@@ -258,22 +255,25 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <div className="mt-8 text-center">
+        {/* Demo Credentials */}
+        <div className="mt-6">
           <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-            <h3 className="text-sm font-medium text-gray-300 mb-3">Demo Credentials</h3>
-            <p className="text-gray-400 text-xs mb-3">You can also sign in with these existing accounts:</p>
-            <div className="space-y-2 text-xs">
+            <h3 className="text-sm font-medium text-gray-300 mb-2">Demo Accounts</h3>
+            <div className="space-y-1.5 text-xs">
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">👑 Admin:</span>
-                <span className="text-blue-400">admin@hirenext.com / admin123</span>
+                <span className="text-blue-400">admin@hirenext.com</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">👔 Recruiter:</span>
-                <span className="text-green-400">recruiter@hirenext.com / recruiter123</span>
+                <span className="text-green-400">recruiter@hirenext.com</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">👤 Candidate:</span>
-                <span className="text-purple-400">candidate@hirenext.com / candidate123</span>
+                <span className="text-purple-400">candidate@hirenext.com</span>
+              </div>
+              <div className="text-center text-gray-500 text-xs mt-2">
+                Password: admin123 / recruiter123 / candidate123
               </div>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { APP_CONFIG } from '@/lib/constants'
+
 
 export default function RecruiterCandidatesPage() {
   return (

@@ -34,7 +34,7 @@ async function dbConnect() {
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
       console.log('✅ Connected to MongoDB')
       return mongoose
-    })
+    }) as any
   }
 
   try {
@@ -50,7 +50,7 @@ async function dbConnect() {
 
 async function dbDisconnect() {
   if (cached.conn) {
-    await cached.conn.disconnect()
+    await (cached.conn as any).disconnect()
     cached.conn = null
     cached.promise = null
     console.log('🔌 Disconnected from MongoDB')

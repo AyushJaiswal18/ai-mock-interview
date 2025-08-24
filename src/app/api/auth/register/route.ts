@@ -8,7 +8,7 @@ import { ROLES } from '@/lib/constants';
 export async function POST(request: NextRequest) {
   return withDB(async () => {
     try {
-      const { email, password, firstName, lastName, role = ROLES.CANDIDATE } = await request.json();
+      const { email, password, firstName, lastName } = await request.json();
 
       // Validate input
       if (!email || !password) {
@@ -37,13 +37,13 @@ export async function POST(request: NextRequest) {
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 12);
 
-      // Create user
+      // Create user with candidate role only
       const user = await User.create({
         email,
         password: hashedPassword,
         firstName,
         lastName,
-        role,
+        role: ROLES.CANDIDATE, // Only candidates can register
         isActive: true,
         metadata: {
           profileComplete: !!(firstName && lastName),

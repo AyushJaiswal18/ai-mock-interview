@@ -6,7 +6,6 @@ import {
   BarChart3, 
   Settings, 
   Plus,
-  TrendingUp,
   Activity,
   Target
 } from "lucide-react";

@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { ROLES } from '@/lib/constants';
 import { getRoleDisplayName, getRoleBadgeColor } from '@/lib/auth';
-import { ChevronUp, ChevronDown, MoreHorizontal, Edit, Eye } from 'lucide-react';
+import { ChevronUp, ChevronDown, Edit, Eye, UserCog } from 'lucide-react';
+import { RoleChangeModal } from './role-change-modal';
 
 interface User {
   _id: string;
-  clerkId: string;
+
   email: string;
   firstName?: string;
   lastName?: string;
@@ -30,6 +30,7 @@ interface UsersTableContentProps {
   onSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
   pagination: any;
   onPageChange: (page: number) => void;
+  onUserUpdate: () => void;
 }
 
 export function UsersTableContent({
@@ -40,12 +41,15 @@ export function UsersTableContent({
   onSelectAll,
   onSort,
   pagination,
-  onPageChange
+  onPageChange,
+  onUserUpdate
 }: UsersTableContentProps) {
   const [sortConfig, setSortConfig] = useState<{ field: string; order: 'asc' | 'desc' }>({
     field: 'createdAt',
     order: 'desc'
   });
+  const [roleModalUser, setRoleModalUser] = useState<User | null>(null);
+  const [roleModalOpen, setRoleModalOpen] = useState(false);
 
   const handleSort = (field: string) => {
     const newOrder = sortConfig.field === field && sortConfig.order === 'asc' ? 'desc' : 'asc';
@@ -75,6 +79,35 @@ export function UsersTableContent({
     const first = firstName?.charAt(0) || '';
     const last = lastName?.charAt(0) || '';
     return (first + last).toUpperCase() || '?';
+  };
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    try {
+      const response = await fetch(`/api/admin/users/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+        },
+        body: JSON.stringify({ role: newRole }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update role');
+      }
+
+      // Refresh the user list
+      onUserUpdate();
+    } catch (error) {
+      console.error('Error updating role:', error);
+      throw error;
+    }
+  };
+
+  const openRoleModal = (user: User) => {
+    setRoleModalUser(user);
+    setRoleModalOpen(true);
   };
 
   if (loading) {
@@ -224,6 +257,7 @@ export function UsersTableContent({
                       variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0"
+                      title="View user details"
                     >
                       <Eye className="w-4 h-4" />
                     </Button>
@@ -231,15 +265,18 @@ export function UsersTableContent({
                       variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0"
+                      title="Change user role"
+                      onClick={() => openRoleModal(user)}
                     >
-                      <Edit className="w-4 h-4" />
+                      <UserCog className="w-4 h-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       className="h-8 w-8 p-0"
+                      title="Edit user"
                     >
-                      <MoreHorizontal className="w-4 h-4" />
+                      <Edit className="w-4 h-4" />
                     </Button>
                   </div>
                 </td>
@@ -285,6 +322,17 @@ export function UsersTableContent({
           </div>
         </div>
       )}
+
+      {/* Role Change Modal */}
+      <RoleChangeModal
+        user={roleModalUser}
+        isOpen={roleModalOpen}
+        onClose={() => {
+          setRoleModalOpen(false);
+          setRoleModalUser(null);
+        }}
+        onRoleChange={handleRoleChange}
+      />
     </div>
   );
 }

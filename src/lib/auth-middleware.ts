@@ -43,8 +43,8 @@ export async function authenticateUser(request: NextRequest): Promise<Authentica
   return request as AuthenticatedRequest;
 }
 
-export function requireAuth(handler: (request: AuthenticatedRequest) => Promise<NextResponse>) {
-  return async (request: NextRequest) => {
+export function requireAuth(handler: (request: AuthenticatedRequest, context?: any) => Promise<NextResponse>) {
+  return async (request: NextRequest, context?: any) => {
     const authenticatedRequest = await authenticateUser(request);
     
     if (!authenticatedRequest.user) {
@@ -54,13 +54,13 @@ export function requireAuth(handler: (request: AuthenticatedRequest) => Promise<
       );
     }
 
-    return handler(authenticatedRequest);
+    return handler(authenticatedRequest, context);
   };
 }
 
 export function requireRole(role: string) {
-  return (handler: (request: AuthenticatedRequest) => Promise<NextResponse>) => {
-    return requireAuth(async (request: AuthenticatedRequest) => {
+  return (handler: (request: AuthenticatedRequest, context?: any) => Promise<NextResponse>) => {
+    return requireAuth(async (request: AuthenticatedRequest, context?: any) => {
       if (request.user?.role !== role) {
         return NextResponse.json(
           { error: 'Insufficient permissions' },
@@ -68,11 +68,11 @@ export function requireRole(role: string) {
         );
       }
 
-      return handler(request);
+      return handler(request, context);
     });
   };
 }
 
-export function requireAdmin(handler: (request: AuthenticatedRequest) => Promise<NextResponse>) {
+export function requireAdmin(handler: (request: AuthenticatedRequest, context?: any) => Promise<NextResponse>) {
   return requireRole('admin')(handler);
 }

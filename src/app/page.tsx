@@ -2,20 +2,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { APP_CONFIG, NAV_CONFIG } from "@/lib/constants";
 import { 
-  Users, 
-  Zap, 
   Target, 
   TrendingUp, 
-  Star, 
   CheckCircle,
   ArrowRight,
-  Play,
   Shield,
   Clock,
-  Award,
-  MessageSquare,
-  BarChart3,
-  Globe,
   Sparkles,
   Brain,
   MessageCircle,
@@ -74,7 +66,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
-              Unlock the secret sauce behind world-class interviews
+              Unlock the &quot;secret sauce&quot; behind world-class interviews
             </h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
               In just a few practice sessions, master the techniques that separate top performers from the rest
@@ -138,7 +130,7 @@ export default function HomePage() {
                       </div>
                     </div>
                     <div className="bg-gray-700/50 rounded-lg p-4 mb-4 transition-all duration-300 hover:bg-gray-600/50">
-                      <p className="text-white mb-3">"Can you explain the difference between useState and useEffect in React, and when would you use each?"</p>
+                      <p className="text-white mb-3">&quot;Can you explain the difference between useState and useEffect in React, and when would you use each?&quot;</p>
                       <div className="flex items-center space-x-2 text-sm text-gray-400">
                         <Clock className="w-4 h-4 animate-pulse" />
                         <span className="animate-pulse">2:30 remaining</span>

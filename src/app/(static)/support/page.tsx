@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { APP_CONFIG } from "@/lib/constants";
+
 import { Search, MessageCircle, Mail, Phone, BookOpen, HelpCircle } from "lucide-react";
 import Link from "next/link";
 
