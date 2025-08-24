@@ -124,6 +124,25 @@ export const FEATURES = {
 export const API_CONFIG = {
   baseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
   timeout: 10000,
+  retries: 3,
+} as const;
+
+// Database Configuration
+export const DB_CONFIG = {
+  name: "hirenext",
+  collections: {
+    users: "users",
+    interviews: "interviews",
+    candidates: "candidates",
+    recruiters: "recruiters",
+    analytics: "analytics",
+  },
+  indexes: {
+    users: ["clerkUserId", "email", "role"],
+    interviews: ["candidateId", "recruiterId", "status", "scheduledAt"],
+    candidates: ["userId", "skills", "experience"],
+    recruiters: ["userId", "assignedCandidates"],
+  },
 } as const;
 
 // Pricing Configuration

@@ -10,6 +10,9 @@ export const env = {
   CLERK_AFTER_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || "/dashboard",
   CLERK_AFTER_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || "/dashboard",
   
+  // Database Configuration
+  MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost:27017/hirenext",
+  
   // App Configuration
   NODE_ENV: process.env.NODE_ENV || "development",
   IS_PRODUCTION: process.env.NODE_ENV === "production",
