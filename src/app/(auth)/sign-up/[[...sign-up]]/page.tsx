@@ -5,15 +5,6 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Get Started
-          </h1>
-          <p className="text-gray-300">
-            Create your account to start practicing
-          </p>
-        </div>
-        
         <SignUp
           appearance={{
             baseTheme: dark,
