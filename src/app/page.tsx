@@ -271,6 +271,11 @@ export default function HomePage() {
                 Book a demo
               </Link>
             </Button>
+            <Button variant="ghost" size="sm" className="text-sm text-gray-400 hover:text-white mt-4" asChild>
+              <Link href="/voice">
+                🎤 Test AssemblyAI STT
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
