@@ -36,13 +36,13 @@ export default function PracticePage() {
         <div className="bg-white rounded-lg shadow p-8 text-center">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">Practice Mode Coming Soon!</h2>
           <p className="text-gray-600 mb-6">
-            For now, try our advanced voice interview practice with AI-powered feedback.
+            For now, try our advanced interview practice with AI-powered feedback.
           </p>
           <Button 
             onClick={() => router.push('/candidate/interviews')}
             className="bg-blue-600 hover:bg-blue-700"
           >
-            🎙️ Try Voice Interview Practice
+                          🎯 Try Interview Practice
           </Button>
         </div>
       </div>

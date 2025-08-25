@@ -15,7 +15,7 @@ interface Interview {
   config: {
     difficulty: string;
     category: string;
-    voiceEnabled?: boolean;
+  
   };
   questions: any[];
   responses: any[];
@@ -76,70 +76,7 @@ export default function InterviewsPage() {
     }
   };
 
-  const createVoiceInterview = async () => {
-    try {
-      const token = localStorage.getItem('auth_token');
-      console.log('Creating interview with token:', {
-        hasToken: !!token,
-        tokenType: typeof token,
-        tokenLength: token ? token.length : 0,
-        tokenStart: token ? token.substring(0, 20) + '...' : 'null',
-        tokenParts: token ? token.split('.').length : 0
-      });
-      
-      // Validate token before making request
-      if (!token || token === 'null' || token === 'undefined' || typeof token !== 'string' || token.split('.').length !== 3) {
-        console.error('Invalid token detected, cannot create interview');
-        setError('Authentication required. Please login again.');
-        return;
-      }
-      
-      const response = await fetch('/api/interviews', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: 'AI-Powered Voice Interview',
-          type: 'ai-driven',
-          scheduledAt: new Date(Date.now() - 60000).toISOString(), // 1 minute ago
-          duration: 30,
-          questionCount: 5,
-          resumeText: 'Experienced software developer with 5+ years in React, Node.js, and TypeScript. Built multiple web applications, led development teams, and specialized in frontend architecture and performance optimization.',
-          jobRequirement: {
-            position: 'Senior Frontend Developer',
-            company: 'TechCorp',
-            industry: 'Technology',
-            level: 'senior',
-            skills: ['React', 'TypeScript', 'Node.js', 'System Design', 'Leadership'],
-            experience: '5+ years',
-            description: 'We are looking for a senior frontend developer to join our team and lead our React-based applications.',
-          },
-        }),
-      });
 
-      if (!response.ok) {
-        throw new Error('Failed to create interview');
-      }
-
-      const result = await response.json();
-      if (result.success) {
-        // Refresh interviews list
-        await loadInterviews();
-        setShowCreateModal(false);
-        // Navigate to voice interview
-        router.push(`/candidate/voice-interview/${result.data._id}`);
-      }
-    } catch (error) {
-      console.error('Error creating interview:', error);
-      alert('Failed to create voice interview. Please try again.');
-    }
-  };
-
-  const startVoiceInterview = (interviewId: string) => {
-    router.push(`/candidate/voice-interview/${interviewId}`);
-  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -188,7 +125,7 @@ export default function InterviewsPage() {
               </Button>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Interview Practice</h1>
-                <p className="text-gray-600">Practice with AI-powered voice interviews</p>
+                                    <p className="text-gray-600">Practice with AI-powered interviews</p>
               </div>
             </div>
             <Button
@@ -196,7 +133,7 @@ export default function InterviewsPage() {
               className="bg-blue-600 hover:bg-blue-700"
             >
               <Plus className="w-4 h-4 mr-2" />
-              New Voice Interview
+                              New Interview
             </Button>
           </div>
         </div>
@@ -224,13 +161,7 @@ export default function InterviewsPage() {
                 >
                   🔄 Retry
                 </Button>
-                <Button
-                  onClick={() => router.push('/debug-auth')}
-                  size="sm"
-                  variant="outline"
-                >
-                  🔧 Fix Auth
-                </Button>
+
               </div>
             </div>
           </div>
@@ -242,7 +173,7 @@ export default function InterviewsPage() {
             <div className="flex items-center">
               <Mic className="w-8 h-8 text-blue-600 mr-3" />
               <div>
-                <h3 className="font-semibold text-gray-900">Voice Interview</h3>
+                <h3 className="font-semibold text-gray-900">Interview</h3>
                 <p className="text-sm text-gray-600">Practice with AI interviewer</p>
               </div>
             </div>
@@ -291,7 +222,7 @@ export default function InterviewsPage() {
             <div className="p-8 text-center">
               <Mic className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">No interviews yet</h3>
-              <p className="text-gray-600 mb-4">Create your first AI-powered voice interview to get started!</p>
+                              <p className="text-gray-600 mb-4">Create your first AI-powered interview to get started!</p>
               <Button 
                 onClick={() => setShowCreateModal(true)}
                 className="bg-blue-600 hover:bg-blue-700"
@@ -312,12 +243,7 @@ export default function InterviewsPage() {
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                           {interview.type}
                         </span>
-                        {interview.config.voiceEnabled && (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            <Mic className="w-3 h-3 mr-1" />
-                            Voice Enabled
-                          </span>
-                        )}
+
                       </div>
                       
                       <div className="flex items-center space-x-6 mt-2 text-sm text-gray-600">
@@ -361,7 +287,6 @@ export default function InterviewsPage() {
                         </Button>
                       ) : (
                         <Button
-                          onClick={() => startVoiceInterview(interview._id)}
                           className="bg-blue-600 hover:bg-blue-700"
                           size="sm"
                         >
@@ -382,18 +307,18 @@ export default function InterviewsPage() {
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">Create Voice Interview</h3>
+            <h3 className="text-lg font-semibold mb-4">Create Interview</h3>
             <p className="text-gray-600 mb-6">
-              Start an AI-powered voice interview with a virtual interviewer. The AI will analyze your resume 
+              Start an AI-powered interview with a virtual interviewer. The AI will analyze your resume 
               and create personalized questions based on your background and the job requirements.
             </p>
             
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
               <h4 className="font-semibold text-blue-900 mb-2">Features:</h4>
               <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Real-time voice conversation with AI</li>
+                <li>• AI-powered interview questions</li>
                 <li>• Personalized questions based on your profile</li>
-                <li>• Live speech analysis and feedback</li>
+                <li>• Real-time feedback and analysis</li>
                 <li>• Professional communication coaching</li>
               </ul>
             </div>
@@ -407,7 +332,6 @@ export default function InterviewsPage() {
                 Cancel
               </Button>
               <Button
-                onClick={createVoiceInterview}
                 className="flex-1 bg-blue-600 hover:bg-blue-700"
               >
                 Create & Start

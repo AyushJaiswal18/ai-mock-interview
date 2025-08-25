@@ -120,25 +120,7 @@ export interface IInterview extends Document {
     networkQuality?: number;
     totalQuestions: number;
     completedQuestions: number;
-    voiceSession?: {
-      sessionId: string;
-      startedAt: Date;
-      voiceSettings: {
-        voiceId: string;
-        speakingStyle: string;
-        enableVoiceAnalysis: boolean;
-        language: string;
-      };
-      conversationContext: {
-        previousQuestions: string[];
-        candidateResponses: string[];
-        currentTopic: string;
-        difficultyLevel: string;
-        candidateEnergy: string;
-        needsEncouragement: boolean;
-        conversationPhase: string;
-      };
-    };
+
   };
   
   createdAt: Date;
@@ -326,25 +308,7 @@ const InterviewSchema = new Schema<IInterview>({
       type: Number,
       default: 0,
     },
-    voiceSession: {
-      sessionId: String,
-      startedAt: Date,
-      voiceSettings: {
-        voiceId: String,
-        speakingStyle: String,
-        enableVoiceAnalysis: Boolean,
-        language: String,
-      },
-      conversationContext: {
-        previousQuestions: [String],
-        candidateResponses: [String],
-        currentTopic: String,
-        difficultyLevel: String,
-        candidateEnergy: String,
-        needsEncouragement: Boolean,
-        conversationPhase: String,
-      }
-    },
+
   },
 }, {
   timestamps: true,

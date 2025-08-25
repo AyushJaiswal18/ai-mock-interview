@@ -8,8 +8,6 @@ export const env = {
   
   // AI Configuration
   OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
-  ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY || "",
-  DEEPGRAM_API_KEY: process.env.DEEPGRAM_API_KEY || "",
   
   // App Configuration
   NODE_ENV: process.env.NODE_ENV || "development",
@@ -21,7 +19,6 @@ export const env = {
   
   // Feature Flags
   ENABLE_ANALYTICS: process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === "true",
-  ENABLE_DEBUG: process.env.NEXT_PUBLIC_ENABLE_DEBUG === "true",
 } as const;
 
 // Validation function to ensure required environment variables are present
@@ -30,8 +27,6 @@ export function validateEnv() {
     "MONGODB_URI",
     "JWT_SECRET",
     "OPENAI_API_KEY",
-    "ELEVENLABS_API_KEY",
-    "DEEPGRAM_API_KEY",
   ];
 
   for (const var_name of required) {

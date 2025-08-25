@@ -113,7 +113,7 @@ export default function CandidateDashboardPage() {
                     router.push('/candidate/interviews');
                   }}
                 >
-                  🎙️ Voice Interview Practice
+                  🎯 Interview Practice
                 </Button>
                 <Button 
                   variant="outline" 
