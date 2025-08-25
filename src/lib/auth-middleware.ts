@@ -35,7 +35,7 @@ export async function authenticateUser(request: NextRequest): Promise<Authentica
   }
 
   (request as AuthenticatedRequest).user = {
-    id: user._id.toString(),
+    id: payload.userId, // Use userId from JWT payload for consistency
     email: user.email,
     role: user.role,
   };

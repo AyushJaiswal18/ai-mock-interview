@@ -20,6 +20,12 @@ export function generateToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): string 
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
+    // Validate token format
+    if (!token || typeof token !== 'string' || token.split('.').length !== 3) {
+      console.error('JWT verification failed: Invalid token format');
+      return null;
+    }
+    
     return jwt.verify(token, JWT_SECRET) as JWTPayload;
   } catch (error) {
     console.error('JWT verification failed:', error);

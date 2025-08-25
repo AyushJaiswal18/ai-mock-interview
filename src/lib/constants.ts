@@ -138,7 +138,7 @@ export const DB_CONFIG = {
     analytics: "analytics",
   },
   indexes: {
-    users: ["clerkUserId", "email", "role"],
+    users: ["email", "role"],
     interviews: ["candidateId", "recruiterId", "status", "scheduledAt"],
     candidates: ["userId", "skills", "experience"],
     recruiters: ["userId", "assignedCandidates"],
@@ -197,3 +197,80 @@ export const SEO_CONFIG = {
   ogImage: "/og-image.png",
   twitterHandle: "@aimockinterview",
 };
+
+// AI Configuration
+export const AI_CONFIG = {
+  MODEL: 'gpt-4o-mini',
+  TEMPERATURE: {
+    LOW: 0.3,    // For analysis and evaluation
+    MEDIUM: 0.4, // For planning
+    HIGH: 0.7,   // For creative generation
+  },
+  MAX_TOKENS: {
+    SHORT: 500,   // For simple responses
+    MEDIUM: 800,  // For analysis
+    LONG: 1000,   // For detailed analysis
+    EXTENDED: 1500, // For comprehensive responses
+  },
+} as const;
+
+// Interview Configuration
+export const INTERVIEW_CONFIG = {
+  DEFAULT_DURATION: 45, // minutes
+  MIN_QUESTIONS: 5,
+  MAX_QUESTIONS: 20,
+  TIME_PER_QUESTION: 4, // minutes
+  QUESTION_DISTRIBUTION: {
+    TECHNICAL: 30,
+    BEHAVIORAL: 40,
+    SITUATIONAL: 20,
+    SKILLS: 10,
+  },
+} as const;
+
+// User Roles
+export const USER_ROLES = {
+  ADMIN: 'admin',
+  RECRUITER: 'recruiter',
+  CANDIDATE: 'candidate',
+} as const;
+
+// Interview Types
+export const INTERVIEW_TYPES = {
+  AI_DRIVEN: 'ai-driven',
+  MANUAL: 'manual',
+} as const;
+
+// API Endpoints
+export const API_ENDPOINTS = {
+  INTERVIEWS: '/api/interviews',
+  USERS: '/api/admin/users',
+  AUTH: {
+    LOGIN: '/api/auth/login',
+    REGISTER: '/api/auth/register',
+  },
+} as const;
+
+// Database Collections
+export const COLLECTIONS = {
+  USERS: 'users',
+  INTERVIEWS: 'interviews',
+  QUESTIONS: 'questions',
+} as const;
+
+// Error Messages
+export const ERROR_MESSAGES = {
+  UNAUTHORIZED: 'Unauthorized access',
+  NOT_FOUND: 'Resource not found',
+  VALIDATION_ERROR: 'Validation error',
+  AI_SERVICE_ERROR: 'AI service error',
+  DATABASE_ERROR: 'Database error',
+} as const;
+
+// Success Messages
+export const SUCCESS_MESSAGES = {
+  INTERVIEW_CREATED: 'Interview created successfully',
+  INTERVIEW_STARTED: 'Interview started successfully',
+  INTERVIEW_ENDED: 'Interview ended successfully',
+  RESPONSE_SUBMITTED: 'Response submitted successfully',
+} as const;

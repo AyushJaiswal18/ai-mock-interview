@@ -99,8 +99,7 @@ UserSchema.index({ role: 1, lastLoginAt: -1 });
 UserSchema.index({ email: 1, role: 1 });
 UserSchema.index({ createdAt: -1, role: 1 });
 
-// Remove old clerkId index if it exists
-// UserSchema.index({ clerkId: 1 }, { sparse: true });
+
 
 // Virtual for full name
 UserSchema.virtual('fullName').get(function() {

@@ -1,17 +1,15 @@
 // Environment Variables Configuration
 export const env = {
-  // Clerk Configuration
-  CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!,
-  CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY!,
-  
-  // Clerk URLs
-  CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/sign-in",
-  CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "/sign-up",
-  CLERK_AFTER_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL || "/dashboard",
-  CLERK_AFTER_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL || "/dashboard",
-  
   // Database Configuration
   MONGODB_URI: process.env.MONGODB_URI || "mongodb://localhost:27017/hirenext",
+  
+  // JWT Configuration
+  JWT_SECRET: process.env.JWT_SECRET || "your-jwt-secret-key",
+  
+  // AI Configuration
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
+  ELEVENLABS_API_KEY: process.env.ELEVENLABS_API_KEY || "",
+  DEEPGRAM_API_KEY: process.env.DEEPGRAM_API_KEY || "",
   
   // App Configuration
   NODE_ENV: process.env.NODE_ENV || "development",
@@ -29,8 +27,11 @@ export const env = {
 // Validation function to ensure required environment variables are present
 export function validateEnv() {
   const required = [
-    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
-    "CLERK_SECRET_KEY",
+    "MONGODB_URI",
+    "JWT_SECRET",
+    "OPENAI_API_KEY",
+    "ELEVENLABS_API_KEY",
+    "DEEPGRAM_API_KEY",
   ];
 
   for (const var_name of required) {
@@ -43,7 +44,7 @@ export function validateEnv() {
 // Export a function to get environment variables with type safety
 export function getEnvVar(key: keyof typeof env): string | boolean {
   const value = env[key];
-  if (!value) {
+  if (value === undefined || value === null) {
     throw new Error(`Environment variable ${key} is not set`);
   }
   return value;

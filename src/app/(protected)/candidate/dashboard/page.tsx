@@ -1,7 +1,11 @@
+'use client';
+
 import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
 
 
 export default function CandidateDashboardPage() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-7xl mx-auto">
@@ -102,14 +106,30 @@ export default function CandidateDashboardPage() {
             <div className="bg-gray-900 rounded-lg p-6">
               <h2 className="text-xl font-semibold mb-4">Quick Start</h2>
               <div className="space-y-3">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                  Start New Practice
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => {
+                    console.log('Navigating to interviews page...');
+                    router.push('/candidate/interviews');
+                  }}
+                >
+                  🎙️ Voice Interview Practice
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    console.log('Navigating to practice page...');
+                    router.push('/candidate/practice');
+                  }}
+                >
+                  📝 Start New Practice
                 </Button>
                 <Button variant="outline" className="w-full">
-                  Review Weak Areas
+                  📊 Review Weak Areas
                 </Button>
                 <Button variant="outline" className="w-full">
-                  Take Assessment
+                  🎯 Take Assessment
                 </Button>
               </div>
             </div>
