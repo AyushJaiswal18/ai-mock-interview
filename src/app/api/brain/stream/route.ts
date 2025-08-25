@@ -1,89 +1,99 @@
+// src/app/api/brain/stream/route.ts
 import { NextRequest } from "next/server";
 import { ChatOpenAI } from "@langchain/openai";
+import { AIMessageChunk } from "@langchain/core/messages";
+import { getMessagesForModel, addUserTurn, addAiTurn } from "@/lib/brain/memory"; // async now!
+import { AI_CONFIG } from "@/lib/constants";
+import { dbConnect } from "@/lib/db";
 
 export const runtime = "nodejs";
 
-const SYSTEM_PROMPT = `You are a concise, friendly interviewer. 
-Speak naturally in short sentences. Avoid long paragraphs or code blocks.`;
+const SYSTEM_PROMPT = `You are ${AI_CONFIG.NAME}, a helpful, concise, voice-friendly assistant.
+- Keep replies short, natural for speech.
+- Use context from prior turns.
+- If you need clarification, ask a brief follow-up.
+- Avoid long code blocks and long lists.`;
+
+// Reuse a single model instance
+const model = new ChatOpenAI({
+  modelName: AI_CONFIG.MODEL,
+  temperature: 0.7,
+  streaming: true,
+  maxTokens: 800,
+});
 
 export async function POST(req: NextRequest) {
-  // Parse JSON safely
-  let body: any;
+    await dbConnect();
+  let sessionId: string | undefined;
+  let lastUser: string | undefined;
+
   try {
-    body = await req.json();
+    const body = await req.json();
+    sessionId = body.sessionId;
+    lastUser = body.lastUser;
   } catch {
     return new Response("Invalid or missing JSON body", { status: 400 });
   }
 
-  const sessionId = String(body?.sessionId || "");
-  const lastUser = String(body?.lastUser || "");
   if (!sessionId || !lastUser) {
     return new Response("Missing sessionId or lastUser", { status: 400 });
   }
 
-  // Model
-  const model = new ChatOpenAI({
-    modelName: process.env.OPENAI_MODEL || "gpt-4o-mini",
-    temperature: 0.5,
-    streaming: true,
-    maxTokens: 600,
-  });
+  // ✅ await async writes
+  await addUserTurn(sessionId, lastUser);
 
-  const enc = new TextEncoder();
+  const encoder = new TextEncoder();
 
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
-      // heartbeat to keep proxies from buffering
-      const ping = setInterval(() => {
-        controller.enqueue(enc.encode(`event: ping\ndata: {"t":${Date.now()}}\n\n`));
-      }, 15000);
-
       let buffer = "";
-      let lastFlush = Date.now();
+      let finalText = "";
+
+      const send = (payload: unknown) =>
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
 
       const flush = (final = false) => {
         const chunk = buffer.trim();
         if (!chunk) return;
-        controller.enqueue(enc.encode(`data: ${JSON.stringify({ text: chunk, final })}\n\n`));
+        send({ text: chunk, final });
         buffer = "";
-        lastFlush = Date.now();
       };
 
       try {
-        // Keep it very simple first (no LC history yet)
-        const iter = await model.stream([
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: lastUser },
-        ]);
+        // ✅ await async read
+        const messages = await getMessagesForModel(sessionId!, SYSTEM_PROMPT);
+
+        // Stream the model output
+        const iter = await model.stream(messages);
 
         for await (const part of iter) {
-          // Normalize token pieces from LangChain
-          let token = "";
-          const any = part as any;
-          if (typeof any === "string") token = any;
-          else if (typeof any?.content === "string") token = any.content;
-          else if (Array.isArray(any?.content)) token = any.content.map((c: any) => c?.text ?? "").join("");
-          else if (typeof any?.delta === "string") token = any.delta;
+          const token =
+            part instanceof AIMessageChunk
+              ? (part.content ?? "")
+              // @ts-ignore handle older shapes
+              : (part?.content ?? part ?? "");
 
           if (!token) continue;
-          buffer += token;
 
-          const endsSentence = /[.!?…]["’”)]?\s$/.test(buffer);
-          const longPhrase = buffer.split(/\s+/).length >= 14;
-          const idle = Date.now() - lastFlush > 220;
+          buffer += String(token);
+          finalText += String(token);
 
-          if (endsSentence || longPhrase || idle) flush(false);
+          if (buffer.length > 20 || /[.!?]\s$/.test(buffer)) flush(false);
         }
 
         flush(true);
+        send("[DONE]");
+
+        const cleanFinal = finalText.trim();
+        if (cleanFinal) {
+          // ✅ await async write
+          await addAiTurn(sessionId!, cleanFinal);
+        }
+
         controller.close();
-      } catch (err: any) {
-        controller.enqueue(
-          enc.encode(`event: error\ndata: ${JSON.stringify({ error: String(err?.message || err) })}\n\n`)
-        );
+      } catch (e: any) {
+        send({ text: `Error: ${String(e?.message || e)}`, final: true });
         controller.close();
-      } finally {
-        clearInterval(ping);
       }
     },
   });

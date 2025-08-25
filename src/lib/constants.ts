@@ -200,6 +200,7 @@ export const SEO_CONFIG = {
 
 // AI Configuration
 export const AI_CONFIG = {
+  NAME: 'Xaya',
   MODEL: 'gpt-4o-mini',
   TEMPERATURE: {
     LOW: 0.3,    // For analysis and evaluation
