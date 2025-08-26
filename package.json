@@ -9,6 +9,7 @@
     "lint": "eslint",
     "seed": "tsx src/scripts/seed-admin.ts",
     "seed-users": "tsx src/scripts/seed-users.ts",
+    "seed:demo": "tsx src/scripts/seed-demo.ts",
     "tts-proxy": "node server/eleven-ws.js"
   },
   "dependencies": {

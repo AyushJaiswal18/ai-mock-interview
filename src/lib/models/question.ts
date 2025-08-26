@@ -45,18 +45,15 @@ const QuestionSchema = new Schema<IQuestion>({
   category: {
     type: String,
     required: true,
-    index: true,
   },
   difficulty: {
     type: String,
     enum: ['easy', 'medium', 'hard'],
     default: 'medium',
     required: true,
-    index: true,
   },
   industry: {
     type: String,
-    index: true,
   },
   tags: [{
     type: String,
@@ -108,12 +105,10 @@ const QuestionSchema = new Schema<IQuestion>({
   isActive: {
     type: Boolean,
     default: true,
-    index: true,
   },
   usageCount: {
     type: Number,
     default: 0,
-    index: true,
   },
 }, {
   timestamps: true,
@@ -126,6 +121,11 @@ QuestionSchema.index({ difficulty: 1, isActive: 1 });
 QuestionSchema.index({ industry: 1, category: 1 });
 QuestionSchema.index({ tags: 1 });
 QuestionSchema.index({ usageCount: -1 });
+QuestionSchema.index({ category: 1 });
+QuestionSchema.index({ difficulty: 1 });
+QuestionSchema.index({ industry: 1 });
+QuestionSchema.index({ isActive: 1 });
+QuestionSchema.index({ usageCount: 1 });
 
 // Text search index
 QuestionSchema.index({ text: 'text' });

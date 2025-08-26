@@ -67,6 +67,8 @@ export interface IInterview extends Document {
       recommendations: string[];
     };
   };
+
+  jobOpeningId: mongoose.Types.ObjectId;
   
   // Questions & Responses
   questions: Array<{
@@ -132,12 +134,12 @@ const InterviewSchema = new Schema<IInterview>({
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
-    index: true,
   },
+  // src/lib/models/interview.ts  (add near top-level fields)
+jobOpeningId: { type: Schema.Types.ObjectId, ref: "JobOpening" },
   recruiterId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    index: true,
   },
   title: {
     type: String,
@@ -155,20 +157,16 @@ const InterviewSchema = new Schema<IInterview>({
     enum: ['scheduled', 'in-progress', 'completed', 'cancelled'],
     default: 'scheduled',
     required: true,
-    index: true,
   },
   scheduledAt: {
     type: Date,
     required: true,
-    index: true,
   },
   startedAt: {
     type: Date,
-    index: true,
   },
   endedAt: {
     type: Date,
-    index: true,
   },
   duration: {
     type: Number,
@@ -308,7 +306,27 @@ const InterviewSchema = new Schema<IInterview>({
       type: Number,
       default: 0,
     },
-
+    sessionId: { type: String },
+    flow: {
+      stage: {
+        type: String,
+        enum: ["intro", "warmup", "core", "followup", "wrap"],
+        default: "intro",
+      },
+      turn: { type: Number, default: 0 },
+      currentQuestion: { type: String, default: "" },
+      currentRubric: { type: String, default: "" },
+    },
+    scores: [
+      {
+        turn: Number,
+        question: String,
+        score: Number,        
+        reasoning: String,
+        answer: String,
+        createdAt: { type: Date, default: () => new Date() },
+      },
+    ],
   },
 }, {
   timestamps: true,
@@ -320,6 +338,15 @@ InterviewSchema.index({ candidateId: 1, createdAt: -1 });
 InterviewSchema.index({ recruiterId: 1, status: 1 });
 InterviewSchema.index({ status: 1, scheduledAt: 1 });
 InterviewSchema.index({ 'config.category': 1, 'config.difficulty': 1 });
+InterviewSchema.index({ jobOpeningId: 1, candidateId: 1, status: 1 });
+InterviewSchema.index({ 'metadata.sessionId': 1 });
+InterviewSchema.index({ candidateId: 1 });
+InterviewSchema.index({ recruiterId: 1 });
+InterviewSchema.index({ status: 1 });
+InterviewSchema.index({ scheduledAt: 1 });
+InterviewSchema.index({ startedAt: 1 });
+InterviewSchema.index({ endedAt: 1 });
+InterviewSchema.index({ jobOpeningId: 1 });
 
 // Virtual for progress calculation
 InterviewSchema.virtual('progress').get(function() {

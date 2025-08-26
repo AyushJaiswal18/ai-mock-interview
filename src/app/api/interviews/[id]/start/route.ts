@@ -1,85 +1,76 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { withDB } from '@/lib/db-utils';
-import { Interview } from '@/lib/models/interview';
-import { requireAuth, AuthenticatedRequest } from '@/lib/auth-middleware';
+// src/app/api/interviews/[id]/start/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import { Types } from "mongoose";
+import { Interview } from "@/lib/models/interview";
+import { User } from "@/lib/models/user";
+import { startSession } from "@/lib/brain/flow";
+import { AuthenticatedRequest, requireAuth } from "@/lib/auth-middleware";
+import { withDB } from "@/lib/db-utils";
 
-// Start interview session
-export const POST = requireAuth(async (request: AuthenticatedRequest) => {
+export const runtime = "nodejs";
+
+type Params = { params: { id: string } };
+
+
+
+export const POST = requireAuth(async (request: AuthenticatedRequest, { params }: Params) => {
   return withDB(async () => {
-    try {
-      const user = request.user;
-      const interviewId = request.url.split('/interviews/')[1].split('/start')[0];
+     // ✅ Get user id on the server
+  const userId = request.user?.id;
+  console.log("userId", userId);
+  if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-      if (!interviewId) {
-        return NextResponse.json(
-          { error: 'Interview ID is required' },
-          { status: 400 }
-        );
-      }
+  const interviewId = params.id;
+  if (!Types.ObjectId.isValid(interviewId)) {
+    return NextResponse.json({ error: "Invalid interview id" }, { status: 400 });
+  }
 
-      const interview = await Interview.findById(interviewId);
+  const interview = await Interview.findById(interviewId);
+  if (!interview) return NextResponse.json({ error: "Interview not found" }, { status: 404 });
 
-      if (!interview) {
-        return NextResponse.json(
-          { error: 'Interview not found' },
-          { status: 404 }
-        );
-      }
+  // Only the candidate who owns this interview can start it
+  if (String(interview.candidateId) !== String(userId)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
-      // Check access permissions
-      if (user.role === 'candidate' && interview.candidateId.toString() !== user.id) {
-        return NextResponse.json(
-          { error: 'Access denied' },
-          { status: 403 }
-        );
-      }
+  // Bind session to interviewId, set status, set startedAt
+  interview.metadata = (interview.metadata || {}) as any;
+  interview.metadata.sessionId = String(interview._id);
 
-      if (user.role === 'recruiter' && interview.recruiterId && interview.recruiterId.toString() !== user.id) {
-        return NextResponse.json(
-          { error: 'Access denied' },
-          { status: 403 }
-        );
-      }
+  if (interview.status !== "in-progress") {
+    interview.status = "in-progress";
+    interview.startedAt = new Date();
+  }
 
-      // Check if interview can be started
-      if (interview.status !== 'scheduled') {
-        return NextResponse.json(
-          { error: 'Interview cannot be started. Current status: ' + interview.status },
-          { status: 400 }
-        );
-      }
+  // Optional personalization
+  const user:any = await User.findById(userId).lean();
+  const name =
+    (user?.firstName || user?.lastName)
+      ? `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim()
+      : undefined;
 
-      // Check if scheduled time has passed
-      const now = new Date();
-      if (interview.scheduledAt > now) {
-        return NextResponse.json(
-          { error: 'Interview cannot be started before scheduled time' },
-          { status: 400 }
-        );
-      }
+  await interview.save();
 
-      // Start the interview
-      interview.status = 'in-progress';
-      interview.startedAt = now;
-      await interview.save();
+  // Ask the flow for the first question
+  const out = await startSession(String(interview._id), {
+    name,
+    role: interview.config?.category || "Software Engineer",
+    stack: interview.config?.industry || "Full-Stack",
+  });
 
-      // Populate user data
-      await interview.populate('candidateId', 'firstName lastName email');
-      if (interview.recruiterId) {
-        await interview.populate('recruiterId', 'firstName lastName email');
-      }
+  // Mirror current question into Interview metadata.flow
+  const inv = await Interview.findById(interviewId);
+  inv!.metadata = (inv!.metadata || {}) as any;
+  inv!.metadata.flow = inv!.metadata.flow || ({} as any);
+  inv!.metadata.flow.currentQuestion = out.question;
+  await inv!.save();
 
-      return NextResponse.json({
-        success: true,
-        data: interview,
-        message: 'Interview started successfully',
-      });
-    } catch (error) {
-      console.error('Error starting interview:', error);
-      return NextResponse.json(
-        { error: 'Internal server error' },
-        { status: 500 }
-      );
-    }
+  return NextResponse.json({
+    interviewId,
+    sessionId: String(interview._id),   // use this on the client
+    stage: out.stage,
+    question: out.question,
+  });
+
   });
 });

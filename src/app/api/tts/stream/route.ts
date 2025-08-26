@@ -7,11 +7,32 @@ const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || "21m00Tcm4TlvDq8ikWAM"; // R
 const MODEL_ID = process.env.ELEVENLABS_MODEL_ID || "eleven_multilingual_v2";
 
 // GET /api/tts/stream?q=hello+world
+// POST /api/tts/stream with { text: "hello world" }
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = (searchParams.get("q") || "").trim();
   if (!API_KEY) return new Response("Missing ELEVENLABS_API_KEY", { status: 500 });
   if (!q) return new Response("Missing q", { status: 400 });
+
+  return await generateTTS(q, searchParams);
+}
+
+export async function POST(req: NextRequest) {
+  if (!API_KEY) return new Response("Missing ELEVENLABS_API_KEY", { status: 500 });
+  
+  try {
+    const body = await req.json();
+    const text = body.text || "";
+    if (!text.trim()) return new Response("Missing text in body", { status: 400 });
+    
+    const { searchParams } = new URL(req.url);
+    return await generateTTS(text.trim(), searchParams);
+  } catch (e) {
+    return new Response("Invalid JSON body", { status: 400 });
+  }
+}
+
+async function generateTTS(text: string, searchParams: URLSearchParams) {
 
   // Latency preset: 0 (highest quality) → 4 (fastest)
   const optimize_streaming_latency = searchParams.get("lat") || "3";
@@ -23,7 +44,7 @@ export async function GET(req: NextRequest) {
   )}&output_format=mp3_44100_128`;
 
   const body = {
-    text: q,
+    text: text,
     model_id: MODEL_ID,
     // Optional: tweak these to taste
     voice_settings: {

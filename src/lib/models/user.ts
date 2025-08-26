@@ -31,7 +31,6 @@ const UserSchema = new Schema<IUser>({
     type: String,
     required: true,
     unique: true,
-    index: true,
   },
   password: {
     type: String,
@@ -50,16 +49,13 @@ const UserSchema = new Schema<IUser>({
     enum: Object.values(ROLES),
     default: ROLES.CANDIDATE,
     required: true,
-    index: true,
   },
   isActive: {
     type: Boolean,
     default: true,
-    index: true,
   },
   lastLoginAt: {
     type: Date,
-    index: true,
   },
   metadata: {
     profileComplete: {
@@ -98,7 +94,9 @@ UserSchema.index({ role: 1, isActive: 1 });
 UserSchema.index({ role: 1, lastLoginAt: -1 });
 UserSchema.index({ email: 1, role: 1 });
 UserSchema.index({ createdAt: -1, role: 1 });
-
+UserSchema.index({ role: 1 });
+UserSchema.index({ isActive: 1 });
+UserSchema.index({ lastLoginAt: 1 });
 
 
 // Virtual for full name
